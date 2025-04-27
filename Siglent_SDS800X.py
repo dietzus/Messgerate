@@ -102,6 +102,23 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         return self.queryCommand(":ACQ:MODE?", expAcqMode)
     
     def setMemDepth(self, MemDepth: float, check: bool=False):                  #Prog Manual P39
+        """
+        Sets the memory depth for data acquisition.
+        
+        Args:
+            MemDepth (float): The desired memory depth in MSa.
+            check (bool, optional): If True, verifies that the memory depth was correctly applied. Defaults to False.
+        
+        Possible Memory Depths and Ranges:
+            - "10k"   : 0 < MemDepth <= 0.01
+            - "100k"  : 0.01 < MemDepth <= 0.1
+            - "1M"    : 0.1 < MemDepth <= 1
+            - "10M"   : 1 < MemDepth <= 10
+            - "50M"   : 10 < MemDepth <= 50
+        
+        Returns:
+        bool: True if the command was sent successfully (and optionally verified), False if MemDepth is out of range.
+        """
         tempstr = ""
         if MemDepth <= 0.01:
             tempstr = "10k"
@@ -123,7 +140,25 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             return self.queryCommand(":ACQ:MDEP?", tempstr)
         return True
     
-    def getMemDepth(self, expMemDepth: str=None):          
+    def getMemDepth(self, expMemDepth: str=None):
+        """
+        Retrieves the current memory depth acquisition setting.
+    
+        Args:
+            expMemDepth (str, optional): The expected memory depth value to validate against. If provided,
+                the function checks if the retrieved value matches this expectation and returns True or False.
+                Defaults to None.
+    
+        Returns:
+            Union[str, bool]: 
+                - If expMemDepth is not provided, returns the current memory depth setting as a string.
+                - If expMemDepth is provided, returns True if the retrieved value matches expMemDepth,
+                  otherwise returns False.
+    
+        Note:
+            The possible memory depth values are "10k", "100k", "1M", "10M", "25M" and "50M".
+            These correspond to specific acquisition ranges as defined in the setMemDepth method.
+        """
         return self.queryCommand(":ACQ:MDEP?", expMemDepth)
     
     def getNumWavef(self):                                                      #Prog Manual P41
@@ -190,5 +225,4 @@ if False:
     time.sleep(2)
     print(testdevice.setMemDepth(50, True))
     time.sleep(2)
-
 testdevice.disconnect()
