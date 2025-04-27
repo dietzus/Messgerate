@@ -31,7 +31,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         self.waitOPC()
         return True
     
-    def getScreenshot(filename: str, picformat: str: "PNG"):
+    def getScreenshot(filename: str, picformat: str="PNG"):
         return NotImplemented
     
     def setAquireMode(self, acqmode: int):
