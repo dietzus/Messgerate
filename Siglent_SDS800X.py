@@ -12,10 +12,14 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
     name: str
     conn: Messgeraete.connection
     IDN: str=""
+    NrChannels: int
+    bandwidth: int
     
-    def __init__(self, addr: str, name: str="SDS800X_HD"):
+    def __init__(self, addr: str, name: str="SDS800X_HD", NrChannels: int=4, bandwidth: int=70):
         self.name = name
         self.conn = Messgeraete.connection(useVISA=True, addr=addr)
+        self.NrChannels = NrChannels
+        self.bandwidth = bandwidth
 
     def getIDN(self):
         self.IDN = self.conn.queryCommand("*IDN?").strip()
@@ -42,7 +46,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             tempstr = "SLOW"
         else:
             return False
-        self.sendCommand(":ACQ:AMOD " + tempstr)
+        self.sendCommand(f":ACQ:AMOD {tempstr}")
         if check:
             return self.queryCommand(":ACQ:AMOD?", tempstr)
         return True
@@ -61,7 +65,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             tempstr = "ON"
         else:
             tempstr = "OFF"
-        self.sendCommand(":ACQ:INT " + tempstr)
+        self.sendCommand(f":ACQ:INT {tempstr}")
         if check:
             return self.queryCommand(":ACQ:INT?", tempstr)
         return True    
@@ -207,7 +211,80 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
     def getSampleRate(self, expSampleRate: str=None):          
         return self.queryCommand(":ACQ:SRAT?", expSampleRate)
     
+    def setAcquireType(self, Type: int, check: bool=False, times: int=None, bits: int=None):             #Prog Manual P46
+        tempstr = ""
+        if Type == 1:
+            tempstr = "NORM"
+        elif Type == 2:
+            tempstr = "PEAK"
+        elif Type == 3:
+            print("Average Mode is not available for the SDS800X HD-Model.")
+            return False
+        elif Type == 4:
+            print("ERES Mode is not available as an aquire-option for te SDS800X HD-Model.")
+            print("Hint: you can use ERES as a math-function on a channel basis.")
+            return False
+        else:
+            print("Please choose either 1 for Normal-Mode or 2 for Peak-Mode.")
+            return False
+        
+        self.sendCommand(":ACQ:TYPE " + tempstr)
+        if check:
+            return self.queryCommand(":ACQ:TYPE?", tempstr)
+        return True
     
+    def getAcquireType(self, expType: str=None):          
+        return self.queryCommand(":ACQ:TYPE?", expType)
+    
+    def setChannelReference(self, Type: int, check: bool=False):             #Prog Manual P48
+        tempstr = ""
+        if Type == 1:
+            tempstr = "OFF"
+        elif Type == 2:
+            tempstr = "POS"
+        else:
+            print("Please choose either 1 for Offset-Mode or 2 for Position-Mode.")
+            return False
+        
+        self.sendCommand(":CHAN:REF " + tempstr)
+        if check:
+            return self.queryCommand(":CHAN:REF?", tempstr)
+        return True
+    
+    def getChannelReference(self, expType: str=None):          
+        return self.queryCommand(":ACQ:REF?", expType)
+    
+    def checkChannel(self, channel: int):
+        if channel > 0 and channel <= self.NrChannels:
+            return True
+        print(f"Invalid channel, allowed values are integers in the range of 1 to {self.NrChannels}.")
+        return False
+    
+    def setBWLimit(self, channel: int, Limit: int, check: bool=False):             #Prog Manual P49
+        if not self.checkChannel(channel):
+            return False
+    
+        tempstr = ""
+        if Limit <= 0:
+            tempstr = "FULL"
+        elif Limit <= 20:
+            tempstr = "20M"
+        elif Limit <= 200:
+            print("The SDS800X HD-model only supports 20M BW-limit -> setting the Limit to FULL instead.")
+            tempstr = "FULL"
+        else:
+            print("Please choose a valid BW-limit, the SDS800X HD offers either 0 for FULL or 20 for 20MHz.")
+            return False
+        
+        self.sendCommand(f":CHAN{channel}:BWL {tempstr}")
+        if check:
+            return self.queryCommand(f":CHAN{channel}:BWL?", tempstr)
+        return True
+    
+    def getBWLimit(self, channel: int, expLimit: str=None):
+        if not self.checkChannel(channel):
+            return False
+        return self.queryCommand(f":CHAN{channel}:BWL?", expLimit)
     
 testdevice = Siglent_SDS800X_HD('TCPIP0::192.168.0.194::inst0::INSTR')
 testdevice.connect()
