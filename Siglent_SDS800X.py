@@ -48,7 +48,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             return False
         self.sendCommand(f":ACQ:AMOD {tempstr}")
         if check:
-            return self.queryCommand(":ACQ:AMOD?", tempstr)
+            return self.getAquireMode(tempstr)
         return True
         
     def getAquireMode(self, expAcqMode: str=None):
@@ -67,7 +67,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             tempstr = "OFF"
         self.sendCommand(f":ACQ:INT {tempstr}")
         if check:
-            return self.queryCommand(":ACQ:INT?", tempstr)
+            return self.getInterpolation(tempstr)
         return True    
     
     def getInterpolation(self, expInterpolation: str=None):          
@@ -83,7 +83,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             tempstr = "AUTO"
         self.sendCommand(":ACQ:MMAN " + tempstr)
         if check:
-            return self.queryCommand(":ACQ:MMAN?", tempstr)
+            return self.getMemManag(tempstr)
         return True    
     
     def getMemManag(self, expInterpolation: str=None):          
@@ -99,7 +99,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             tempstr = "YT"
         self.sendCommand(":ACQ:MODE " + tempstr)
         if check:
-            return self.queryCommand(":ACQ:MODE?", tempstr)
+            return self.getAcqMode(tempstr)
         return True    
     
     def getAcqMode(self, expAcqMode: str=None):          
@@ -141,7 +141,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         
         self.sendCommand(":ACQ:MDEP " + tempstr)
         if check:
-            return self.queryCommand(":ACQ:MDEP?", tempstr)
+            return self.getMemDepth(tempstr)
         return True
     
     def getMemDepth(self, expMemDepth: str=None):
@@ -165,11 +165,11 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         """
         return self.queryCommand(":ACQ:MDEP?", expMemDepth)
     
-    def getNumWavef(self):                                                      #Prog Manual P41
-        return self.queryCommand(":ACQ:NUMA?")
+    def getNumWavef(self, expNumWavef: int=None):                                                      #Prog Manual P41
+        return self.queryCommand(":ACQ:NUMA?", expNumWavef)
     
-    def getNumPoints(self):                                                     #Prog Manual P41
-        return self.queryCommand(":ACQ:POIN?")
+    def getNumPoints(self, expNumPoints: int=None):                                                     #Prog Manual P41
+        return self.queryCommand(":ACQ:POIN?", expNumPoints)
 
     def setSeq(self, Sequence: bool, check: bool=False):                        #Prog Manual P43
         tempstr = ""
@@ -179,7 +179,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             tempstr = "OFF"
         self.sendCommand(":ACQ:SEQ " + tempstr)
         if check:
-            return self.queryCommand(":ACQ:SEQ?", tempstr)
+            return self.getSeq(tempstr)
         return True    
     
     def getSeq(self, expSeqState: str=None):
@@ -192,7 +192,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         tempstr = str(count)
         self.sendCommand(":ACQ:SEQ:COUN " + tempstr)
         if check:
-            return self.queryCommand(":ACQ:SEQ:COUN?", tempstr)
+            return self.getSeqCount(tempstr)
         return True    
     
     def getSeqCount(self, expSeqCount: str=None):
@@ -205,7 +205,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         tempstr = str(Samplerate)     
         self.sendCommand(":ACQ:SRAT " + tempstr)
         if check:
-            return self.queryCommand(":ACQ:SRAT?", tempstr)
+            return self.getSampleRate(tempstr)
         return True
     
     def getSampleRate(self, expSampleRate: str=None):          
@@ -230,7 +230,11 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         
         self.sendCommand(":ACQ:TYPE " + tempstr)
         if check:
+<<<<<<< HEAD
+            return self.getAcquireType(tempstr)
+=======
             return self.queryCommand(":ACQ:TYPE?", tempstr)
+>>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
         return True
     
     def getAcquireType(self, expType: str=None):          
@@ -248,7 +252,11 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         
         self.sendCommand(":CHAN:REF " + tempstr)
         if check:
+<<<<<<< HEAD
+            return self.getChannelReference(tempstr)
+=======
             return self.queryCommand(":CHAN:REF?", tempstr)
+>>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
         return True
     
     def getChannelReference(self, expType: str=None):          
@@ -278,13 +286,75 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         
         self.sendCommand(f":CHAN{channel}:BWL {tempstr}")
         if check:
+<<<<<<< HEAD
+            return self.getBWLimit(channel, tempstr)
+=======
             return self.queryCommand(f":CHAN{channel}:BWL?", tempstr)
+>>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
         return True
     
     def getBWLimit(self, channel: int, expLimit: str=None):
         if not self.checkChannel(channel):
             return False
         return self.queryCommand(f":CHAN{channel}:BWL?", expLimit)
+<<<<<<< HEAD
+    
+    def setCoupling(self, channel: int, coupling: int, check: bool=False):      #Prog Manual P50
+        if not self.checkChannel(channel):
+            return False
+        
+        tempstr = ""
+        if coupling == 1:
+            tempstr = "DC"
+        elif coupling == 2:
+            tempstr = "AC"
+        elif coupling == 3:
+            tempstr = "GND"
+        else:
+            print("Please choose either 1 for DC-Coupling, 2 for AC-Coupling or 3 for Ground-Coupling.")
+            return False
+        
+        self.sendCommand(f":CHAN{channel}:COUP {tempstr}")
+        if check:
+            return self.getCoupling(channel, tempstr)
+        return True
+    
+    def getCoupling(self, channel: int, expCoupling: str=None):
+        if not self.checkChannel(channel):
+            return False
+        return self.queryCommand(f":CHAN{channel}:COUP?", expCoupling)
+    
+    def setImpedance(self, channel: int, impedance: int=0, check: bool=False):  #Prog Manual P51
+        return NotImplemented
+    
+    def getImpedance(self, channel: int, expImpedance: str=None):
+        return NotImplemented
+    
+    def setInvert(self, channel: int, invert: bool=False, check: bool=False):   #Prog Manual P52
+        return NotImplemented
+    
+    def getInvert(self, channel: int, expInvert: str=None):
+        return NotImplemented
+    
+    def setLabelOnOff(self, channel: int, OnOff: bool, check: bool=False):      #Prog Manual P53
+        return NotImplemented
+    
+    def getLabelOnOff(self, channel: int, exp: str=None):
+        return NotImplemented
+    
+    def setLabelText(self, channel: int, text: str, check: bool=False):         #Prog Manual P54
+        return NotImplemented
+    
+    def getLabelText(self, channel: int, expText: str=None):
+        return NotImplemented
+    
+    def setOffset(self, channel: int, offset: float, check: bool=False):        #Prog Manual P55
+        return NotImplemented
+    
+    def getOffset(self, channel: int, expOffset: float=None):
+        return NotImplemented
+=======
+>>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
     
 testdevice = Siglent_SDS800X_HD('TCPIP0::192.168.0.194::inst0::INSTR')
 testdevice.connect()
