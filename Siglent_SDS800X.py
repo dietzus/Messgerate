@@ -230,11 +230,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         
         self.sendCommand(":ACQ:TYPE " + tempstr)
         if check:
-<<<<<<< HEAD
             return self.getAcquireType(tempstr)
-=======
-            return self.queryCommand(":ACQ:TYPE?", tempstr)
->>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
         return True
     
     def getAcquireType(self, expType: str=None):          
@@ -252,11 +248,7 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         
         self.sendCommand(":CHAN:REF " + tempstr)
         if check:
-<<<<<<< HEAD
             return self.getChannelReference(tempstr)
-=======
-            return self.queryCommand(":CHAN:REF?", tempstr)
->>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
         return True
     
     def getChannelReference(self, expType: str=None):          
@@ -286,18 +278,13 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         
         self.sendCommand(f":CHAN{channel}:BWL {tempstr}")
         if check:
-<<<<<<< HEAD
             return self.getBWLimit(channel, tempstr)
-=======
-            return self.queryCommand(f":CHAN{channel}:BWL?", tempstr)
->>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
         return True
     
     def getBWLimit(self, channel: int, expLimit: str=None):
         if not self.checkChannel(channel):
             return False
         return self.queryCommand(f":CHAN{channel}:BWL?", expLimit)
-<<<<<<< HEAD
     
     def setCoupling(self, channel: int, coupling: int, check: bool=False):      #Prog Manual P50
         if not self.checkChannel(channel):
@@ -353,8 +340,101 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
     
     def getOffset(self, channel: int, expOffset: float=None):
         return NotImplemented
-=======
->>>>>>> f3feeb8bde362a6e519062a1e8eee97251f8587c
+    
+    def setProbeAttenuation(self, channel: int, attenuation: float, check: bool=False):        #Prog Manual P56
+        return NotImplemented
+    
+    def getProbeAttenuation(self, channel: int, expAttenuation: float=None):
+        return NotImplemented
+    
+    def setScale(self, channel: int, attenuation: float, check: bool=False):        #Prog Manual P57
+        return NotImplemented
+    
+    def getScale(self, channel: int, expScale: float=None):
+        return NotImplemented
+    
+    def setSkew(self, channel: int, scale: float, check: bool=False):        #Prog Manual P58
+        return NotImplemented
+    
+    def getSkew(self, channel: int, expScale: float=None):
+        return NotImplemented
+    
+    def setChannelOnOff(self, channel: int, OnOff: bool, check: bool=False):        #Prog Manual P59
+        return NotImplemented
+    
+    def getChannelOnOff(self, channel: int, expOnOff: str=None):
+        return NotImplemented
+    
+    def setUnit(self, channel: int, unit: int, check: bool=False):        #Prog Manual P60
+        return NotImplemented
+    
+    def getUnit(self, channel: int, expUnit: str=None):
+        return NotImplemented
+    
+    def setVisible(self, channel: int, visible: bool, check: bool=False):        #Prog Manual P61
+        return NotImplemented
+    
+    def getVisible(self, channel: int, expVisible: str=None):
+        return NotImplemented
+    
+    # ------------------------- Counter Section of the Prog Manual P62-P73 skipped
+    
+    def setCursorOnOff(self, CursorOnOff: bool, check: bool=False):        #Prog Manual P75
+        return NotImplemented
+    
+    def getCursorOnOff(self, expCursorOnOff: str=None):
+        return NotImplemented
+    
+    def setCursorTagstyle(self, CursorTagstyle: int, check: bool=False):        #Prog Manual P76
+        return NotImplemented
+    
+    def getCursorTagstyle(self, expCursorTagstyle: str=None):
+        return NotImplemented
+        
+    def getCursorIXDelta(self, expIXDelta: str=None):             #Prog Manual P77
+        return self.queryCommand(":CURS:IXD?", expIXDelta)
+    
+    def setCursorMItem(self, Mtype: int, source1: int, source2: int=None, check: bool=False):        #Prog Manual P78
+        return NotImplemented
+    
+    def getCursorMItem(self, expMItem: str=None):
+        return NotImplemented
+    
+    def setCursorMode(self, Mtype: int, MMode: int=None, check: bool=False):        #Prog Manual P79
+        return NotImplemented
+    
+    def getCursorMode(self, expCursorMode: str=None):
+        return NotImplemented
+    
+    def setCursorSource(self, source1o2: int, source: int, subsource: int, check: bool=False):        #Prog Manual P80-81
+        return NotImplemented
+    
+    def getCursorSource(self, expCursorSource: str=None):
+        return NotImplemented
+    
+    def setCursorXY1XY2(self, xy: int, cursor: int, value: float, check: bool=False):        #Prog Manual P82-83, 86-87
+        return NotImplemented
+    
+    def getCursorXY1XY2(self, xy: int, cursor: int, expCurserValue: float=None):
+        return NotImplemented
+    
+    def getCursorX1X2Delta(self, expCurserDelta: float=None):                        #Prog Manual P84
+        return self.queryCommand(":CURS:XDEL?", expCurserDelta)
+    
+    def setCursorXYRef(self, xy: int, CType: int, check: bool=False):        #Prog Manual P85, 89
+        return NotImplemented
+    
+    def getCursorXYRef(self, xy: int, expXRef: str=None):
+        return NotImplemented
+    
+    def getCursorY1Y2Delta(self, expCurserDelta: float=None):                        #Prog Manual P88
+        return self.queryCommand(":CURS:XDEL?", expCurserDelta)
+    
+    # ------------------------- Decode Section of the Prog Manual P90-P191 skipped
+    
+    # ------------------------- Digital Commands Section of the Prog Manual P192-P207 skipped
+    
+    
     
 testdevice = Siglent_SDS800X_HD('TCPIP0::192.168.0.194::inst0::INSTR')
 testdevice.connect()
