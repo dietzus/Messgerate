@@ -16,16 +16,49 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
     bandwidth: int
     
     def __init__(self, addr: str, name: str="SDS800X_HD", NrChannels: int=4, bandwidth: int=70):
+        """
+        Initialize a Siglent SDS 800X HD oscilloscope instance.
+        
+        Parameters:
+            addr (str): The address of the oscilloscope, typically a VISA resource string.
+            name (str, optional): Name identifier for the instrument. Defaults to "SDS800X_HD".
+            NrChannels (int, optional): Number of channels on the oscilloscope. Defaults to 4.
+            bandwidth (int, optional): Maximum bandwidth in megahertz (MHz). Defaults to 70.
+        
+        This method establishes a connection to the oscilloscope using the provided address and initializes
+        its configuration with the specified parameters, including channel count and bandwidth settings.
+        """
+
         self.name = name
         self.conn = Messgeraete.connection(useVISA=True, addr=addr)
         self.NrChannels = NrChannels
         self.bandwidth = bandwidth
 
     def getIDN(self):
+        """
+        Queries the oscilloscope for its identification information using the *IDN? command.
+    
+        Returns:
+            str: The identification string of the device, containing manufacturer details and model number. This value is also stored in the instance variable `self.IDN`.
+        """
+
         self.IDN = self.conn.queryCommand("*IDN?").strip()
         return self.IDN
 
     def waitOPC(self):
+        """
+        Sends an SCPI query to the oscilloscope to check if all previous operations have completed.
+        
+        The function issues the '*OPC?' command, which queries the instrument to confirm whether it has finished processing 
+        all preceding commands. This ensures synchronization between the software and hardware operations.
+        
+        Note: This function does not verify the actual completion of operations on the oscilloscope; instead, it confirms that 
+        the query was successfully sent. If any errors occur during the query, they will be raised as exceptions by the underlying 
+        `queryCommand` method.
+        
+        Returns:
+            bool: True, indicating that the query was initiated successfully.
+        """
         self.conn.queryCommand("*OPC?")
         return True
     
@@ -434,7 +467,95 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
     
     # ------------------------- Digital Commands Section of the Prog Manual P192-P207 skipped
     
+    def setAxisLabelsOnOff(self, OnOff: bool, check: bool=False):        #Prog Manual P209
+        return NotImplemented
     
+    def getAxisLabelsOnOff(self, expAxisLabelOnOff: str=None):
+        return self.queryCommand(":DISP:AXIS?", expAxisLabelOnOff)
+    
+    def setAxisLabelMode(self, Mode: int, check: bool=False):        #Prog Manual P210
+        return NotImplemented
+    
+    def getAxisLabelMode(self, expAxisMode: str=None):
+        return self.queryCommand(":DISP:AXIS:MODE?", expAxisMode)
+    
+    def setDisplayBacklight(self, brightness: int, check: bool=False):        #Prog Manual P211
+        return NotImplemented
+    
+    def getDisplayBacklight(self, expDisplayBrightness: str=None):
+        return self.queryCommand(":DISP:BACK?", expDisplayBrightness)
+    
+    def clearWaveforms(self):                                               #Prog Manual P212
+        self.sendCommand(":DISP:CLE")
+        return True
+    
+    def setDisplayColorOnOff(self, ColorOnOff: bool, check: bool=False):
+        return NotImplemented
+    
+    def getDisplayColorOnOff(self, expDisplayColorOnOff: str=None):
+        return self.queryCommand(":DISP:COL?", expDisplayColorOnOff)
+    
+    def setDisplayGraticule(self, graticule: int, check: bool=False):       #Prog Manual P213
+        return NotImplemented
+    
+    def getDisplayGraticule(self, expDisplayCraticule: int=None):
+        return self.queryCommand(":DISP:GRAT?", expDisplayCraticule)
+    
+    def setDisplayGridstyle(self, gridstyle: int, check: bool=False):       #Prog Manual P214
+        return NotImplemented
+    
+    def getDisplayGridstyle(self, expGridstyle: str=None):
+        return self.queryCommand(":DISP:GRID?", expGridstyle)
+    
+    def setDisplayIntensity(self, intensity: int, check: bool=False):       #Prog Manual P215
+        return NotImplemented
+    
+    def getDisplayIntensity(self, expIntensity: int=None):
+        return self.queryCommand(":DISP:INT?", expIntensity)
+    
+    def setMenuStyle(self, style: int, check: bool=False):       #Prog Manual P216
+        return NotImplemented
+    
+    def getMenuStyle(self, expMenuStyle: int=None):
+        return self.queryCommand(":DISP:MENU?", expMenuStyle)
+    
+    def setMenuHidetime(self, hidetime: int, check: bool=False):       #Prog Manual P217
+        return NotImplemented
+    
+    def getMenuHidetime(self, expHidetime: str=None):
+        return self.queryCommand(":DISP:MENU:HIDE?", expHidetime)
+    
+    def setDisplayPersistence(self, persistence: int, check: bool=False):       #Prog Manual P218
+        return NotImplemented
+    
+    def getDisplayPersistence(self, expPersistence: int=None):
+        return self.queryCommand(":DISP:PERS?", expPersistence)
+    
+    def setDisplayTransparency(self, transparency: int, check: bool=False):       #Prog Manual P219
+        return NotImplemented
+    
+    def getDisplayTransparency(self, expTransparency: int=None):
+        return self.queryCommand(":DISP:TRAN?", expTransparency)
+    
+    def setDisplayType(self, DisplayType: int, check: bool=False):       #Prog Manual P220
+        return NotImplemented
+    
+    def getDisplayType(self, expDisplayType: str=None):
+        return self.queryCommand(":DISP:TYPE?", expDisplayType)
+    
+    # ------------------------- DVM Section of the Prog Manual P221-P228 skipped
+    
+    def setFFTDisplay(self, DisplayType: int, check: bool=False):       #Prog Manual P231
+        return NotImplemented
+    
+    def getFFTDisplay(self, expDisplayType: str=None):
+        return self.queryCommand(":FUNC:FFTD?", expDisplayType)
+    
+    def setGatethreshold(self, valueA: float, valueB: float, check: bool=False):       #Prog Manual P232
+        return NotImplemented
+    
+    def getGatethreshold(self, expValueA: float=None, expValueB: float=None):
+        return NotImplemented 
     
 testdevice = Siglent_SDS800X_HD('TCPIP0::192.168.0.194::inst0::INSTR')
 testdevice.connect()
