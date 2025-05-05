@@ -5,7 +5,7 @@ Created on Mon Apr 14 06:41:26 2025
 @author: Martin
 """
 
-import time, serial, sys
+import time, serial
 import pyvisa as visa
     
 class connection:
@@ -39,6 +39,7 @@ class connection:
         self.default_sleep = defaultSleep
         self.timeout = timeout
         self.connObj = None
+        return True
     
     def checkAvailable(self):
         devlist = visa.ResourceManager().list_resources()
