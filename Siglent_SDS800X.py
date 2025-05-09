@@ -31,22 +31,18 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
 
         self.name = name
         self.conn = Messgeraete.connection(useVISA=True, addr=addr)
-        if self.conn is not True:
-            return False
         if NrChannels == 2 or NrChannels == 4:
             self.NrChannels = NrChannels
         else:
-            return False
+            return None
         if bandwidth > 200:
-            return False
+            return None
         elif bandwidth > 100:
             self.bandwidth = 200    	#TODO: is this smart?
         elif bandwidth > 70:
             self.bandwidth = 100
         else:
             self.bandwidth = 70
-            
-        return True
 
     def getIDN(self):
         """
@@ -571,32 +567,33 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
     def getGatethreshold(self, expValueA: float=None, expValueB: float=None):
         return NotImplemented 
     
-    # --------------------------------------- pyTest Start --------------------------------------- #
-
-    def test_checkChannel(self):
-        assert self.checkChannel(1) is True
-        assert self.checkChannel(2) is True
-        assert self.checkChannel(3) is True
-        assert self.checkChannel(4) is True
-        assert self.checkChannel(0) is False
-        assert self.checkChannel(5) is False
-
-    # ---------------------------------------- pyTest End ---------------------------------------- #
-    
 testdevice = Siglent_SDS800X_HD('TCPIP0::192.168.0.194::inst0::INSTR')
-testdevice.connect()
-print(testdevice.getIDN())
-if False:
-    testdevice.reset()
-    print(testdevice.setAquireMode(1))
-    print(testdevice.setMemDepth(0.01, True))
-    time.sleep(2)
-    print(testdevice.setMemDepth(0.1, True))
-    time.sleep(2)
-    print(testdevice.setMemDepth(1, True))
-    time.sleep(2)
-    print(testdevice.setMemDepth(10, True))
-    time.sleep(2)
-    print(testdevice.setMemDepth(50, True))
-    time.sleep(2)
-testdevice.disconnect()
+if testdevice is not None and testdevice.connect() is True: 
+    print(testdevice.getIDN())
+    if False:
+        testdevice.reset()
+        print(testdevice.setAquireMode(1))
+        print(testdevice.setMemDepth(0.01, True))
+        time.sleep(2)
+        print(testdevice.setMemDepth(0.1, True))
+        time.sleep(2)
+        print(testdevice.setMemDepth(1, True))
+        time.sleep(2)
+        print(testdevice.setMemDepth(10, True))
+        time.sleep(2)
+        print(testdevice.setMemDepth(50, True))
+        time.sleep(2)
+    testdevice.disconnect()
+
+# --------------------------------------- pyTest Start --------------------------------------- #
+
+def test_checkChannel():
+    tempdevice = Siglent_SDS800X_HD("demo")
+    assert tempdevice.checkChannel(1) is True
+    assert tempdevice.checkChannel(2) is True
+    assert tempdevice.checkChannel(3) is True
+    assert tempdevice.checkChannel(4) is True
+    assert tempdevice.checkChannel(0) is False
+    assert tempdevice.checkChannel(5) is False
+
+# ---------------------------------------- pyTest End ---------------------------------------- #

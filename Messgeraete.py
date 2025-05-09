@@ -39,7 +39,6 @@ class connection:
         self.default_sleep = defaultSleep
         self.timeout = timeout
         self.connObj = None
-        return True
     
     def checkAvailable(self):
         devlist = visa.ResourceManager().list_resources()
