@@ -297,12 +297,6 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
     def getChannelReference(self, expType: str=None):          
         return self.queryCommand(":ACQ:REF?", expType)
     
-    def checkChannel(self, channel: int):
-        if channel > 0 and channel <= self.NrChannels:
-            return True
-        print(f"Invalid channel, allowed values are integers in the range of 1 to {self.NrChannels}.")
-        return False
-    
     def setBWLimit(self, channel: int, Limit: int, check: bool=False):             #Prog Manual P49
         if not self.checkChannel(channel):
             return False

@@ -142,10 +142,12 @@ class connection:
 class measdevice():
     name: str
     conn: connection
+    NrChannels: int
     
     def __init__(self, name: str, useVISA: bool, addr: str):
         self.name = name
         self.conn = connection(useVISA, addr)
+        self.NrChannels = 0
     
     def setName(self, name: str):
         tempname = self.name
@@ -169,3 +171,9 @@ class measdevice():
     
     def queryCommand(self, cmd: str, expAnsw: str=None):
         return self.conn.queryCommand(cmd, expAnsw)
+    
+    def checkChannel(self, channel: int):
+        if channel > 0 and channel <= self.NrChannels:
+            return True
+        print(f"Invalid channel, allowed values are integers in the range of 1 to {self.NrChannels}.")
+        return False
