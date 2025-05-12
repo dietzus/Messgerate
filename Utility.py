@@ -100,3 +100,21 @@ def removeDuplicatesFreqList(origList: [], tolerance: int=1):
             lastvalue = tempvalue
     
     return templist
+
+def compareFloatFloat(float1: float, float2: float, tolerance: float=0.01):
+    if float1 < float2:
+        return (float1 + tolerance) > float2
+    return (float1 - tolerance) < float2
+
+def compareFloatString(floatstring: str, compfloat: float, tolerance: float=0.01):
+    tempfloat = 0
+    try:
+        tempfloat = float(floatstring)
+    except:
+        return False
+    
+    return compareFloatFloat(tempfloat, compfloat)
+
+
+
+

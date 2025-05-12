@@ -348,11 +348,31 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
             return False
         return self.queryCommand(f":CHAN{channel}:COUP?", expCoupling)
     
-    def setImpedance(self, channel: int, impedance: int=0, check: bool=False):  #Prog Manual P51
-        return NotImplemented
+    def setImpedance(self, channel: int, impedance: int, check: bool=False):  #Prog Manual P51
+        if not self.checkChannel(channel):
+            return False
+        
+        tempstr = ""
+        if impedance == 1:
+            tempstr = "ONEM"
+        elif impedance == 2:
+            tempstr = "FIFT"
+        else:
+            print("Please choose either 1 for 1MOhm or 2 for 50Ohm.")
+            return False
+        
+        self.sendCommand(f":CHAN{channel}:IMP {tempstr}")
+        if check:
+            return self.getCoupling(channel, tempstr)
+        return True
     
     def getImpedance(self, channel: int, expImpedance: str=None):
-        return NotImplemented
+        if not self.checkChannel(channel):
+            return False
+        tempanswer = self.queryCommand(f":CHAN{channel}:IMP?")
+        if expImpedance is not None:
+            return expImpedance in tempanswer
+        return tempanswer
     
     def setInvert(self, channel: int, invert: bool=False, check: bool=False):   #Prog Manual P52
         return NotImplemented
@@ -373,10 +393,22 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         return NotImplemented
     
     def setOffset(self, channel: int, offset: float, check: bool=False):        #Prog Manual P55
-        return NotImplemented
+        if not self.checkChannel(channel):
+            return False
+        
+        self.sendCommand(f":CHAN{channel}:OFFS {offset}")
+        if check:
+            return self.getOffset(channel, offset)
+        return True
     
     def getOffset(self, channel: int, expOffset: float=None):
-        return NotImplemented
+        if not self.checkChannel(channel):
+            return False
+        tempanswer = self.queryCommand(f":CHAN{channel}:OFFS?")
+        if expOffset is not None:
+            return 
+        try: 
+        return tempanswer
     
     def setProbeAttenuation(self, channel: int, attenuation: float, check: bool=False):        #Prog Manual P56
         return NotImplemented
@@ -559,7 +591,9 @@ class Siglent_SDS800X_HD(Messgeraete.measdevice):
         return NotImplemented
     
     def getGatethreshold(self, expValueA: float=None, expValueB: float=None):
-        return NotImplemented 
+        return NotImplemented
+    
+    
     
 testdevice = Siglent_SDS800X_HD('TCPIP0::192.168.0.194::inst0::INSTR')
 if testdevice is not None and testdevice.connect() is True: 
